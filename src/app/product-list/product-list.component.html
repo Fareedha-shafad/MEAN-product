@@ -1,7 +1,6 @@
-<div class='card'>
+    <div class='card'>
     <div class='card-header'>
-        {{title}}
-
+     {{title}}
     </div>
     <div class='card-body'>
         <div class='table-responsive'>
@@ -19,12 +18,12 @@
                         <th>AVAILABLE</th>
                         <th>PRICE</th>
                         <th>5 STAR RATING</th>
-                        <th></th>
+                        <th></th><th></th>
                     </tr>
                 </thead>
                 <tbody>
                 
-                    <tr *ngFor='let product of products'>
+                    <tr *ngFor='let product of products;let i=index'>
                         <td>
                             <img *ngIf='showImage'
                              [src]='product.ImageUrl'
@@ -38,12 +37,12 @@
                         <td>{{product.price}}</td>
                         <td>{{product.starRating}}</td>
                         <td>
-                                <button type='button' class='btn btn-default btn-sm'>
-                                   Edit 
-                                </button> 
-                                <button type='button' class='btn btn-default btn-sm' (click)="deleteProduct(productId)">
-                                    Delete 
-                                 </button>
+                         <button type='button' class='btn btn-success btn-sm' [routerLink]="['/edit-product/',product._id]">
+                            Edit 
+                        </button></td><td>
+                        <button type='button' class='btn btn-danger btn-sm' (click)="removeProduct(product,i)">
+                             Delete 
+                        </button>
                         </td>
 
 

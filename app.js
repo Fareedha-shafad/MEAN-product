@@ -1,14 +1,14 @@
 const express=require('express');
 const ProductData=require('./src/model/Productdata.js');
-var ObjectId=require('mongoose').Types.ObjectId;
+//const mongoose=require('mongoose');
 const cors=require('cors');
 var bodyparser=require('body-parser');
 
 
 var app=new express();
 app.use(cors());
-app.use(bodyparser.json())
-
+app.use(bodyparser.json());
+//app.use (mongoose.Types.ObjectId);
 
 
 app.get('/products',function(req,res){
@@ -17,10 +17,7 @@ app.get('/products',function(req,res){
     ProductData.find()
         .then(function(products){
             res.send(products);
-    // ProductData.find((err,products)=>{
-    //     if(!err){res.send(products);}
-    //     else(console.log("error while loading data"+JSON.stringify(err,undefined,2)));
-    
+
         });
 });
 
@@ -43,32 +40,41 @@ app.post('/insert',function(req,res){
     product.save();
 });
 
-app.put('update/:id',function(req,res){
-res.header("Access-Control-Allow-Origin","*")
-    res.header('Access-Control-Allow-Methods:GET,POST,PATCH,PUT,DELETE,OPTION');
-    
-    var product={
-        productId:req.body.product.productId,
-        productName:req.body.product.productName,
-        productCode:req.body.product.productCode,
-        releaseDate:req.body.product.releaseDate,
-        discription:req.body.product.releaseDate,
-        price:req.body.product.price,
-        starRating:req.body.product.starRating,
-        ImageUrl:req.body.product.ImageUrl,
-    };
-    ProductData.findByIdAndUpdate(req.params.id,{$set:product},{new:true});
+app.get('/edit/:id',function(req,res){
+ProductData.findById(req.params.id,(error,daat)=>{
+    if(error){
+        return next(error)
+    }else{
+        res.json(data)
+    }
+})
 });
 
-app.delete('/:id',function(req,res){
-    res.header("Access-Control-Allow-Origin","*")
-    res.header('Access-Control-Allow-Methods:GET,POST,PATCH,PUT,DELETE,OPTION');
-    ProductData.findByIdAndRemove(req.params.id);
+app.put('/update/:id',(req,res,next)=>{
+    ProductData.findByIdAndUpdate(req.params.id,{
+        $set:req.body
+    },(error,data)=>{
+        if(error){
+            return next(error);
+            console.log(error)
+        }else{
+            res.json(data)
+            console.log("Data Updated Sucessfully")
+        }
+    })
+})
+
+app.delete('/delete/:id',function(req,res,next){
+    ProductData.findOneAndRemove(req.params.id,(error,data)=>{
+        if(error){
+            return next(error);
+        }else{
+            res.status(200).json({
+                msg:data
+            })
+        }
+    })
 });
-
-
-
-
 
 
 app.listen(3000,function(){
